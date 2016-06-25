@@ -1,0 +1,1 @@
+This project uses Entity framework and Microsoft SQL Server. The configuration file (App.config) must be changed to suit deployment environment

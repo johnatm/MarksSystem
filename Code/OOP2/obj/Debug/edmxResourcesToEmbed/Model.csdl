@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Component">
+    <Key>
+      <PropertyRef Name="ComponentID" />
+    </Key>
+    <Property Name="ComponentID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="ModuleID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="ComponentName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Weightage" Type="Int32" Nullable="false" />
+    <Property Name="Marks" Type="Int32" Nullable="true" />
+    <NavigationProperty Name="Module" Relationship="Self.FK_Component_Module" FromRole="Component" ToRole="Module" />
+  </EntityType>
+  <EntityType Name="Level">
+    <Key>
+      <PropertyRef Name="LevelID" />
+    </Key>
+    <Property Name="LevelID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="LevelName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Modules" Relationship="Self.FK_Module_Level" FromRole="Level" ToRole="Module" />
+  </EntityType>
+  <EntityType Name="Module">
+    <Key>
+      <PropertyRef Name="ModuleID" />
+    </Key>
+    <Property Name="ModuleID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="ModuleName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="LevelID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Credits" Type="Int32" />
+    <NavigationProperty Name="Components" Relationship="Self.FK_Component_Module" FromRole="Module" ToRole="Component" />
+    <NavigationProperty Name="Level" Relationship="Self.FK_Module_Level" FromRole="Module" ToRole="Level" />
+  </EntityType>
+  <Association Name="FK_Component_Module">
+    <End Role="Module" Type="Self.Module" Multiplicity="1" />
+    <End Role="Component" Type="Self.Component" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Module">
+        <PropertyRef Name="ModuleID" />
+      </Principal>
+      <Dependent Role="Component">
+        <PropertyRef Name="ModuleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Module_Level">
+    <End Role="Level" Type="Self.Level" Multiplicity="0..1" />
+    <End Role="Module" Type="Self.Module" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Level">
+        <PropertyRef Name="LevelID" />
+      </Principal>
+      <Dependent Role="Module">
+        <PropertyRef Name="LevelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Components" EntityType="Self.Component" />
+    <EntitySet Name="Levels" EntityType="Self.Level" />
+    <EntitySet Name="Modules" EntityType="Self.Module" />
+    <AssociationSet Name="FK_Component_Module" Association="Self.FK_Component_Module">
+      <End Role="Module" EntitySet="Modules" />
+      <End Role="Component" EntitySet="Components" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Module_Level" Association="Self.FK_Module_Level">
+      <End Role="Level" EntitySet="Levels" />
+      <End Role="Module" EntitySet="Modules" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
